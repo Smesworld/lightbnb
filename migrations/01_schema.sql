@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS properties;
-DROP TABLE IF EXISTS rates;
 DROP TABLE IF EXISTS reservations;
 DROP TABLE IF EXISTS property_reviews;
-DROP TABLE IF EXISTS guest_reviews;
+-- DROP TABLE IF EXISTS rates;
+-- DROP TABLE IF EXISTS guest_reviews;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE properties (
   street VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   province VARCHAR(255) NOT NULL,
-  postal_code VARCHAR(6) NOT NULL,
+  postal_code VARCHAR(255) NOT NULL,
   active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
