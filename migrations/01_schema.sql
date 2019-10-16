@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS properties;
-DROP TABLE IF EXISTS reservations;
-DROP TABLE IF EXISTS property_reviews;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS properties CASCADE;
+DROP TABLE IF EXISTS reservations CASCADE;
+DROP TABLE IF EXISTS property_reviews CASCADE;
 -- DROP TABLE IF EXISTS rates;
 -- DROP TABLE IF EXISTS guest_reviews;
 
@@ -29,7 +29,7 @@ CREATE TABLE properties (
   street VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   province VARCHAR(255) NOT NULL,
-  postal_code VARCHAR(255) NOT NULL,
+  post_code VARCHAR(255) NOT NULL,
   active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
