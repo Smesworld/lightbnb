@@ -25,13 +25,11 @@ const getUserWithEmail = function(email) {
     LIMIT 1;
     `, [email])
     .then(res => {
-      if (res.rows[0].email === email) {
-        return res.rows[0];
-      } else {
-        return null;
-      }
+      return res.rows[0];
     })
-    .catch(err => console.error('query error', err.stack));
+    .catch(err => {
+      return null;
+    });
 }
 exports.getUserWithEmail = getUserWithEmail;
 
@@ -41,10 +39,20 @@ exports.getUserWithEmail = getUserWithEmail;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  return Promise.resolve(users[id]);
+  return pool.query(`
+    SELECT *
+    FROM users
+    WHERE id = $1
+    LIMIT 1;
+    `, [id])
+    .then(res => {
+      return res.rows[0];
+    })
+    .catch(err => {
+      return null;
+    });
 }
 exports.getUserWithId = getUserWithId;
-
 
 /**
  * Add a new user to the database.
@@ -52,10 +60,20 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
-  const userId = Object.keys(users).length + 1;
-  user.id = userId;
-  users[userId] = user;
-  return Promise.resolve(user);
+  console.log(user);
+  return pool.query(`
+    INSERT INTO users (name, email, password) 
+    VALUES ($1, $2, $3)
+    RETURNING *;
+    `, [user.name, user.email, user.password])
+    .then(res => {
+      console.log(res.rows);
+      return res.rows[0];
+    })
+    .catch(err => {
+      console.log(err)
+      return null;
+    });
 }
 exports.addUser = addUser;
 
