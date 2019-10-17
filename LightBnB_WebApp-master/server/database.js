@@ -18,9 +18,10 @@ const getUserWithEmail = function(email) {
       return res.rows[0];
     })
     .catch(err => {
+      console.error('query error', err.stack);
       return null;
     });
-}
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**
@@ -39,9 +40,10 @@ const getUserWithId = function(id) {
       return res.rows[0];
     })
     .catch(err => {
+      console.error('query error', err.stack);
       return null;
     });
-}
+};
 exports.getUserWithId = getUserWithId;
 
 /**
@@ -59,9 +61,10 @@ const addUser =  function(user) {
       return res.rows[0];
     })
     .catch(err => {
+      console.error('query error', err.stack);
       return null;
     });
-}
+};
 exports.addUser = addUser;
 
 /// Reservations
@@ -86,10 +89,11 @@ const getAllReservations = function(guest_id, limit = 10) {
       return res.rows;
     })
     .catch(err => {
+      console.error('query error', err.stack);
       return null;
     });
 
-}
+};
 exports.getAllReservations = getAllReservations;
 
 /// Properties
@@ -121,7 +125,7 @@ const getAllProperties = function(options, limit = 10) {
     }
 
     queryParams.push(Number(options.owner_id));
-    queryString += ` owner_id = $${queryParams.length} `
+    queryString += ` owner_id = $${queryParams.length} `;
   }
 
   if (options.minimum_price_per_night) {
@@ -132,7 +136,7 @@ const getAllProperties = function(options, limit = 10) {
     }
 
     queryParams.push(Number(options.minimum_price_per_night));
-    queryString += ` cost_per_night > $${queryParams.length} `
+    queryString += ` cost_per_night > $${queryParams.length} `;
   }
 
   if (options.maximum_price_per_night) {
@@ -143,7 +147,7 @@ const getAllProperties = function(options, limit = 10) {
     }
 
     queryParams.push(Number(options.maximum_price_per_night));
-    queryString += `cost_per_night < $${queryParams.length}`
+    queryString += `cost_per_night < $${queryParams.length}`;
   }
 
   queryString += `
@@ -162,11 +166,14 @@ const getAllProperties = function(options, limit = 10) {
   `;
 
   return db.query(queryString, queryParams)
-  .then(res => {
-    return res.rows;
-  })
-  .catch(err => console.error('query error', err.stack));
-}
+    .then(res => {
+      return res.rows;
+    })
+    .catch(err => {
+      console.error('query error', err.stack);
+      return null;
+    });
+};
 exports.getAllProperties = getAllProperties;
 
 
@@ -189,14 +196,15 @@ const addProperty = function(property) {
   INSERT INTO properties (${queryKeys.join(', ')}) 
   VALUES (${queryValues.join(', ')})
   RETURNING *;
-  `
+  `;
 
   return db.query(queryString, queryParams)
-  .then(res => {
-    return res.rows[0];
-  })
-  .catch(err => {
-    return null;
-  });
-}
+    .then(res => {
+      return res.rows[0];
+    })
+    .catch(err => {
+      console.error('query error', err.stack);
+      return null;
+    });
+};
 exports.addProperty = addProperty;
