@@ -1,14 +1,4 @@
-const properties = require('./json/properties.json');
-const users = require('./json/users.json');
-
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  user: 'vagrant',
-  password: '123',
-  host: 'localhost',
-  database: 'lightbnb'
-});
+const db = require('./db');
 
 /// Users
 
@@ -18,7 +8,7 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
-  return pool.query(`
+  return db.query(`
     SELECT *
     FROM users
     WHERE email = $1
@@ -39,7 +29,7 @@ exports.getUserWithEmail = getUserWithEmail;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  return pool.query(`
+  return db.query(`
     SELECT *
     FROM users
     WHERE id = $1
@@ -60,7 +50,7 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
-  return pool.query(`
+  return db.query(`
     INSERT INTO users (name, email, password) 
     VALUES ($1, $2, $3)
     RETURNING *;
@@ -82,7 +72,7 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  return pool.query(`
+  return db.query(`
     SELECT reservations.*, properties.*,  AVG(rating) AS average_rating
     FROM properties
     JOIN reservations ON properties.id = reservations.property_id
@@ -171,9 +161,7 @@ const getAllProperties = function(options, limit = 10) {
   LIMIT $${queryParams.length};
   `;
 
-  console.log(queryString, queryParams);
-
-  return pool.query(queryString, queryParams)
+  return db.query(queryString, queryParams)
   .then(res => {
     return res.rows;
   })
@@ -197,22 +185,17 @@ const addProperty = function(property) {
     queryValues.push(`$${queryParams.length}`);
   }
 
-  console.log(queryKeys, queryParams, queryValues);
   let queryString = `
   INSERT INTO properties (${queryKeys.join(', ')}) 
   VALUES (${queryValues.join(', ')})
   RETURNING *;
   `
 
-  console.log(queryString);
-
-  return pool.query(queryString, queryParams)
+  return db.query(queryString, queryParams)
   .then(res => {
-    console.log(res.rows[0])
     return res.rows[0];
   })
   .catch(err => {
-    console.log(err);
     return null;
   });
 }
